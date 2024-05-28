@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "app",
+			"path": "../OneDrive/Desktop/app"
+		},
+		{
+			"name": "foodie",
+			"path": "."
+		},
+		{
+			"name": "assets",
+			"path": "../OneDrive/Desktop/assets"
+		}
+	],
+	"settings": {}
+}
