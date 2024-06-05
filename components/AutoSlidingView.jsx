@@ -6,7 +6,7 @@ const AUTO_SCROLL_INTERVAL = 3000; // 3 seconds
 
 const data = [
   { id: '1', image: require('../assets/images/shop1.jpg') },
-  { id: '2', image: require('../assets/images/shop1.jpg') },
+  { id: '2', image: require('../assets/images/shop3.png') },
   { id: '3', image: require('../assets/images/shop1.jpg') },
   { id: '4', image: require('../assets/images/shop1.jpg') },
 

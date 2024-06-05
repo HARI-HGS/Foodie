@@ -90,7 +90,7 @@ function OpenWebsite(WebsiteLink) {
           <View key={contact.uid} style={styles.cards}>
             <View style={styles.inlineContainer}>
               <View style = {{width:'80%'}}>
-              <Text style={styles.heading}>{contact.shopName}</Text></View>
+              <Text style={styles.heading}>{contact.shopName} (<Text style={{color:'green'}}>Open</Text>)</Text></View>
               <TouchableOpacity
                 onPress={()=> router.push('shopDetails/details')}
               >
@@ -103,12 +103,24 @@ function OpenWebsite(WebsiteLink) {
               resizeMode="contain"
               onLoad={(event) => onImageLoad(event, contact.uid)}
             />
-            <Image
-              source={contact.commentsimgUrl}
-              style={styles.cmtImg}
-            />
-            <Text style={styles.likes}>{contact.likes}</Text>
-            <Text style={styles.viewCmt}>{contact.viewcmt}</Text>
+            <View style={styles.btnsContainer}>
+              <TouchableOpacity>
+              <Text style={styles.btns}>Likes({contact.likes})</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.btns}> View Comments</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity>
+                <Text style={styles.btns}>Save</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Text style={styles.btns}>Share</Text>
+              </TouchableOpacity>
+            </View>
+            <TextInput placeholder="Add Comment" style={{backgroundColor:'lightgray',margin:5,borderRadius:10,padding:5}}>
+              
+            </TextInput>
             
           </View>
         ))}
@@ -118,6 +130,21 @@ function OpenWebsite(WebsiteLink) {
 }
 
 const styles = StyleSheet.create({
+  btns:{
+
+    padding:5,
+    fontSize:20,
+    backgroundColor:'white',
+    borderRadius:10,
+    marginTop:5,
+    marginHorizontal:5
+  },
+  btnsContainer:{
+  flexDirection:'row',
+  alignItems:'center',
+  justifyContent:'space-between'
+
+  },
 
   searchContainer: {
     flexDirection: 'row',
@@ -187,11 +214,13 @@ const styles = StyleSheet.create({
   cards: {
     backgroundColor: 'white',
     width: '100%',
+    marginBottom:20
   },
 
   cardTotal: {
     borderColor: '#000000',
     borderRadius: 5,
+    
   },
 
   button: {

@@ -68,7 +68,7 @@ const FavComponent = () => {
             {contact.map((contact) => (
           <View key={contact.uid} style={styles.cardContainer}>
             <View style={styles.inlineContainer}>
-              <View style = {{width:'80%'}}>
+              <View style = {{width:'90%'}}>
               <Text style={styles.heading}>{contact.shopName}</Text></View>
               <TouchableOpacity
                 onPress={()=> router.push('shopDetails/details')}
@@ -81,6 +81,7 @@ const FavComponent = () => {
               style={[styles.image, { height: imageDimensions[contact.uid] || 0 }]}
               resizeMode="contain"
               onLoad={(event) => onImageLoad(event, contact.uid)}
+
             />
             
             
@@ -209,9 +210,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginRight: 5,
+        marginHorizontal:40,
         marginBottom: 10,
         marginTop: 10,
-        marginLeft: 2,
+       
       },
 });

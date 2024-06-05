@@ -62,17 +62,17 @@ const TabsLayout = () => {
         )
       }}/>
       <Tabs.Screen 
-       name="register" 
+       name="shop" 
        options={{
-        title:"register", 
+        title:"shop", 
         tabBarIcon:({color,focused})=>(
         <TabIcon
         icon={icons.reg}
         color={color}
-        name="register"
+        name="shop"
         focused={focused}
         />
-        ),tabBarStyle:{ display: 'none' },
+        ),tabBarStyle:{ display: 'none',width:20,height:30 },
       }}/>
 
       
