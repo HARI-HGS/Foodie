@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 
-const Shop = () => {
+const userLogin = () => {
 
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -27,7 +27,7 @@ const Shop = () => {
         placeholder="Enter Password"
         secureTextEntry
       />
-      <TouchableOpacity style={styles.buttonview} onPress={()=> router.push('Shop/shopProfile')}>
+      <TouchableOpacity style={styles.buttonview} onPress={()=> router.push('home')}>
         <Text style={styles.button}>Login</Text>
       </TouchableOpacity>
       <View style={styles.signupContainer}>
@@ -40,7 +40,7 @@ const Shop = () => {
   );
 };
 
-export default Shop;
+export default userLogin;
 
 const styles = StyleSheet.create({
   headerText: {

@@ -14,6 +14,8 @@ const RootLayout = () => {
       <Stack.Screen name='Shop/shopProfile' options={{headerShown:false}}/>
       <Stack.Screen name='register' options={{headerShown:false}}/>
       <Stack.Screen name='adsCollection' options={{headerShown:false}}/>
+      <Stack.Screen name='userLogin' options={{headerShown:false}}/>
+      <Stack.Screen name='shopKeeperLogin' options={{headerShown:false}}/>
       </Stack>
    
   )

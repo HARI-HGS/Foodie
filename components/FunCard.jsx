@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
-import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, TextInput } from 'react-native';
-const { width } = Dimensions.get('window');
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions, TextInput, Modal, FlatList } from 'react-native';
 import { icons } from '../constants';
 import AutoSlidingView from './AutoSlidingView';
-import{useRouter} from 'expo-router';
+import { useRouter } from 'expo-router';
 
-function OpenWebsite(WebsiteLink) {
-  Linking.openURL(WebsiteLink);
-}
+const { width } = Dimensions.get('window');
 
- const FunCard = () => {
+const FunCard = () => {
   const [imageDimensions, setImageDimensions] = useState({});
+  const [searchQuery, setSearchQuery] = useState(''); // State for search input
+  const [searchModalVisible, setSearchModalVisible] = useState(false); // Modal visibility state
+  const [suggestions, setSuggestions] = useState([
+    "Pizza Place", "Burger King", "Sushi House", "PanCake Restaurant",
+    "Ibaco", "DreamCake Creams", "Ice Cream Corner", "Taco Town"
+  ]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState(suggestions);
   const router = useRouter();
+
   const contact = [
     {
       uid: 1,
@@ -37,22 +42,7 @@ function OpenWebsite(WebsiteLink) {
       likes: '10.5k',
       viewcmt: 'View all comments below...',
     },
-    {
-      uid: 4,
-      shopName: 'PanCake Restaurant',
-      imgUrl: require('../assets/images/shop4.jpg'),
-      commentsimgUrl: require('../assets/images/cmtimg.png'),
-      likes: '25.5k',
-      viewcmt: 'View all comments below...',
-    },
-    {
-      uid: 5,
-      shopName: 'DreamCake Creams',
-      imgUrl: require('../assets/images/shop6.jpg'),
-      commentsimgUrl: require('../assets/images/cmtimg.png'),
-      likes: '10.5k',
-      viewcmt: 'View all comments below...',
-    },
+    // ... Other contacts
   ];
 
   const onImageLoad = (event, uid) => {
@@ -66,35 +56,64 @@ function OpenWebsite(WebsiteLink) {
     }));
   };
 
+  const handleSearchChange = (text) => {
+    setSearchQuery(text);
+    if (text.length > 0) {
+      const filtered = suggestions.filter(suggestion =>
+        suggestion.toLowerCase().includes(text.toLowerCase())
+      );
+      setFilteredSuggestions(filtered);
+    } else {
+      setFilteredSuggestions(suggestions);
+    }
+  };
+
+  const handleSuggestionSelect = (suggestion) => {
+    setSearchQuery(suggestion);
+    setSearchModalVisible(false); // Close the modal after selection
+  };
+
+  // Filtered contacts based on search query
+  const filteredContacts = contact.filter(contact =>
+    contact.shopName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
-      <View style={{width}}>
+    <View style={{ width }}>
       <View style={styles.searchContainer}>
-      <TextInput
-            style={styles.searchBox}
+        <TouchableOpacity onPress={() => setSearchModalVisible(true)} style={styles.searchBox}>
+          <TextInput
+            style={styles.searchInput}
             placeholder="Search"
+            value={searchQuery}
+            editable={false} // Open modal on click, not editable here
           />
           <TouchableOpacity style={styles.iconContainer}>
             <Image source={icons.search} style={styles.searchIcon} />
           </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
 
+      <View style={{ width: '100%', height: 150 }}>
+        <AutoSlidingView />
       </View>
-      <View style={{width:'100%',height:150}}>
-      <AutoSlidingView/>
+
+      <View style={{ width: '100%', alignItems: 'center' }}>
+        <Text style={{ padding: 10, fontWeight: 'bold', fontSize: 20 }}>Top Restaurants and Hotels near you</Text>
       </View>
-      <View style={{width:'100%',alignItems:'center'}}>
-      <Text style={{padding:10,fontWeight:'bold',fontSize:20}}>Top Restarents and Hotels near you</Text>
-      </View>
-      
+
       <View style={styles.cardTotal}>
-        {contact.map((contact) => (
+        {filteredContacts.map((contact) => (
           <View key={contact.uid} style={styles.cards}>
             <View style={styles.inlineContainer}>
-              <View style = {{width:'80%'}}>
-              <Text style={styles.heading}>{contact.shopName} (<Text style={{color:'green'}}>Open</Text>)</Text></View>
+              <View style={styles.shopNameContainer}>
+                <Text style={styles.heading}>{contact.shopName} (<Text style={{ color: 'green' }}>Open</Text>)</Text>
+              </View>
               <TouchableOpacity
-                onPress={()=> router.push('shopDetails/details')}
+                onPress={() => router.push('shopDetails/details')}
+                style={styles.moreButton}
               >
-                <Text style={[styles.heading, styles.button]}>More</Text>
+                <Text style={styles.moreButtonText}>More</Text>
               </TouchableOpacity>
             </View>
             <Image
@@ -105,12 +124,11 @@ function OpenWebsite(WebsiteLink) {
             />
             <View style={styles.btnsContainer}>
               <TouchableOpacity>
-              <Text style={styles.btns}>Likes({contact.likes})</Text>
+                <Text style={styles.btns}>Likes({contact.likes})</Text>
               </TouchableOpacity>
               <TouchableOpacity>
-                <Text style={styles.btns}> View Comments</Text>
+                <Text style={styles.btns}>View Comments</Text>
               </TouchableOpacity>
-              
               <TouchableOpacity>
                 <Text style={styles.btns}>Save</Text>
               </TouchableOpacity>
@@ -118,45 +136,73 @@ function OpenWebsite(WebsiteLink) {
                 <Text style={styles.btns}>Share</Text>
               </TouchableOpacity>
             </View>
-            <TextInput placeholder="Add Comment" style={{backgroundColor:'lightgray',margin:5,borderRadius:10,padding:5}}>
-              
-            </TextInput>
-            
+            <TextInput placeholder="Add Comment" style={{ backgroundColor: 'lightgray', margin: 5, borderRadius: 10, padding: 5 }} />
           </View>
         ))}
       </View>
-      </View>
+
+      {/* Modal for search suggestions */}
+      <Modal
+        visible={searchModalVisible}
+        animationType="slide"
+        onRequestClose={() => setSearchModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <TextInput
+            style={styles.modalSearchBox}
+            placeholder="Type your search"
+            value={searchQuery}
+            onChangeText={handleSearchChange}
+            autoFocus={true} // Focus when modal opens
+          />
+          <FlatList
+            data={filteredSuggestions}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.suggestionItem} onPress={() => handleSuggestionSelect(item)}>
+                <Text>{item}</Text>
+              </TouchableOpacity>
+            )}
+          />
+          <TouchableOpacity style={styles.closeButton} onPress={() => setSearchModalVisible(false)}>
+            <Text style={styles.closeButtonText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  btns:{
-
-    padding:5,
-    fontSize:20,
-    backgroundColor:'white',
-    borderRadius:10,
-    marginTop:5,
-    marginHorizontal:5
+  btns: {
+    padding: 5,
+    fontSize: 20,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginTop: 5,
+    marginHorizontal: 5,
   },
-  btnsContainer:{
-  flexDirection:'row',
-  alignItems:'center',
-  justifyContent:'space-between'
-
+  btnsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
-
   searchContainer: {
     flexDirection: 'row',
-    marginHorizontal:5,
-    marginVertical:10,
-    padding:5,
+    marginHorizontal: 5,
+    marginVertical: 10,
+    padding: 5,
     borderColor: '#BEBEBE',
     borderWidth: 1,
     borderRadius: 5,
     alignItems: 'center',
-},
+  },
   searchBox: {
+    flexDirection: 'row',
+    flex: 1,
+    alignItems: 'center',
+  },
+  searchInput: {
     flex: 1,
     color: 'black',
     paddingHorizontal: 10,
@@ -171,66 +217,23 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  containerHeading1: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-
-  viewCmt: {
-    alignSelf: 'flex-start',
-  },
-
-  likes: {
-    color: '#000000',
-    fontSize: 10.5,
-    paddingHorizontal: 1,
-    marginLeft: 2,
-    marginBottom: 2,
-  },
-
-  heading1: {
-    fontWeight: 'bold',
-    color: '#000000',
-    fontSize: 17,
-  },
-
-  cmtImg: {
-    alignContent: 'flex-start',
-    width: 100,
-    height: 40,
-  },
-
   heading: {
     fontSize: 20,
     fontWeight: 'bold',
     padding: 2,
   },
-
   image: {
     width: '100%',
   },
-
   cards: {
     backgroundColor: 'white',
     width: '100%',
-    marginBottom:20
+    marginBottom: 20,
   },
-
   cardTotal: {
     borderColor: '#000000',
     borderRadius: 5,
-    
   },
-
-  button: {
-    paddingHorizontal: 20,
-    borderRadius: 3,
-    paddingVertical: 3,
-    backgroundColor: '#FF3A3A',
-    color: '#FFFFFF',
-  },
-
   inlineContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -239,6 +242,51 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
     marginLeft: 2,
+    paddingRight: 5, // Add padding to the right to prevent button overflow
+  },
+  shopNameContainer: {
+    flex: 1, // Ensures shop name takes up remaining space
+  },
+  moreButton: {
+    minWidth: 70, // Set a fixed width for the "More" button
+    alignItems: 'flex-end',
+  },
+  moreButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    backgroundColor: '#FF3A3A',
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+  },
+  modalSearchBox: {
+    borderWidth: 1,
+    borderColor: '#BEBEBE',
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
+  suggestionItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#BEBEBE',
+  },
+  closeButton: {
+    alignItems: 'center',
+    padding: 10,
+    backgroundColor: '#FF3A3A',
+    borderRadius: 5,
+  },
+  closeButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
   },
 });
 

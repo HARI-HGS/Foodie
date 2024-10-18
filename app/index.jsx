@@ -1,147 +1,88 @@
-import { Image, ScrollView, StyleSheet, Text, TextInput, View,TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import { Link, router, useRouter } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import NumberInputBox from '../components/NumberInputBox'
+import { Image, ScrollView, StyleSheet, Text, TextInput, View, TouchableOpacity, PixelRatio } from 'react-native';
+import React, { useState } from 'react';
+import { Link, router, useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import NumberInputBox from '../components/NumberInputBox';
 import { images } from '../constants/images';
-import GoogleSignInButton from '../components/googlesignup'
+import GoogleSignInButton from '../components/googlesignup';
 
-const index = () => {
+const Index = () => {
+  const router = useRouter();
 
- const router = useRouter();
-
-  const handleContinue = () =>{
-
+  const handleContinue = () => {
     router.push('home');
-
-  }
+  };
 
   const [phoneNumber, setPhoneNumber] = useState('');
 
+  // Get the font scale factor
+  const fontScale = PixelRatio.getFontScale();
+
   return (
-
-    <View style = {styles.container}>
-      <Text style={styles.text}>Login</Text>
-      <View style={styles.inputbox}>
-      <View style={styles.flag}>
-        <Image style ={styles.flagimg}source={require('../assets/images/flag.jpg')}/>
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.container}>
+        <Text style={[styles.loginText, { fontSize: 24 * fontScale }]}>Login</Text>
+        <View style={styles.logoContainer}>
+          <TouchableOpacity style={styles.logo}onPress={()=> router.push('userLogin')}>
+            <Image style={styles.img} source={require('../assets/icons/logoprofile.jpg')} />
+            <Text style={[styles.text, { fontSize: 16 * fontScale }]}>User Profile</Text>  
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.logo} onPress={()=> router.push('shopKeeperLogin')}>
+            <Image style={styles.img} source={require('../assets/icons/logoprofile.jpg')}/>
+            <Text style={[styles.text, { fontSize: 16 * fontScale }]}>Shop Keeper</Text>
+          </TouchableOpacity>
+        </View>     
       </View>
-      <TextInput
-        style={styles.input}
-        keyboardType="phone-pad"
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
-        placeholder="Enter Mobile Number"
-      />
-      </View>
-      
-      <TouchableOpacity style={styles.buttonview} onPress={handleContinue}>
-          <Text style={styles.button}>Continue</Text>
-      </TouchableOpacity>
+    </SafeAreaView>
+  );
+};
 
-        <View style={styles.separator}>
-        <View style={styles.line}></View>
-        <Text style={styles.separatorText}>or</Text>
-        <View style={styles.line}></View>
-      </View>
-      <View style={styles.containerx}>
-      <GoogleSignInButton />
-    </View>
-     </View>
-     
-  )
-}  
-
-export default index
+export default Index;
 
 const styles = StyleSheet.create({
-  containerx:{
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    borderColor:'#FFFFFF',
+  safeArea: {
+    flex: 1,
+    
+    backgroundColor:'#FFD700'
   },
- buttonview:{
-    marginTop:25,
-    width:'86%',
-    alignItems:'center',
-    justifyContent:'center',
-    borderRadius:5,
-    borderWidth:1,
-    padding:10,
-    backgroundColor:'#FFD700',
-    borderColor:'#FFD700',
 
- },
- separator: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  width: '80%',
-  marginVertical: 20,
-},
-separatorText: {
-  marginHorizontal: 10,
-  fontSize: 16,
-  color: 'gray',
-},
-line: {
-  flex: 1,
-  height: 1,
-  backgroundColor: 'gray',
-},
- seperators:{
-  
-  flexDirection:'row',
- justifyContent:'space-between'
- },
- button:{
-  color:'#FFFFFF',
-  fontWeight:'bold',
-  fontSize:20
- },
-  container:{
-    flex:1,
-    alignItems:'center',
-    justifyContent:'center'
+  img: {
+    width: "100%", // Adjusts to the width of the logo container
+    height: 80, // Keeps the image size consistent
+    marginBottom: 10, // Spacing between image and text
+    resizeMode: 'contain', // Ensures the image is not cropped and fits within the container
+    borderRadius: 15, // Slightly rounds the corners of the image
   },
-  text:{
-    fontSize:25,
-    color:'#FFD700',
-    fontWeight:'bold',
+
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  flag:{
-    width:'14%',
-    height:50,
-    borderColor:'gray',
-    borderWidth:1,
-    borderRadius:5,
-    
-    alignItems:'center',
-    justifyContent:'center',
-    padding:1
+
+  loginText: {
+    marginBottom: 35,
+    textAlign: 'center',
+    color:'white',
+   
   },
-  input: {
-    height: 50,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginLeft:10,
-    borderRadius:5,
-    padding:6,
-    paddingLeft:20,
-    width:'70%',
-},
-  inputbox:{
-  flexDirection:'row',
-  justifyContent:'space-between',
-  marginTop:10,
+
+  logoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    width: '100%',
+    paddingHorizontal: 20,
   },
-  flagimg:{
-    width:'90%',
-    height:'80%',
-    
-    borderRadius:5,
-  
-  
+
+  logo: {
+    width: '30%', // Adjusts the logo box to take up 30% of the screen width
+    padding: 5, // Adjusts padding for better spacing
+    borderRadius: 10,
+    borderStyle: 'solid',
+    alignItems: 'center',
   },
- 
-})
+
+  text: {
+    textAlign: 'center',
+  },
+});

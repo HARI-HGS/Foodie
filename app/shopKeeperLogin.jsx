@@ -1,63 +1,48 @@
-import { SafeAreaView, StyleSheet, Text,TextInput,TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { TouchableOpacity, SafeAreaView, StyleSheet, Text, View, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
-const signUp = () => {
+const shopKeeperLogin = () => {
+
+  const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userEmail, setEmail] = useState('');
-  const [userPassword, setPassword] = useState('');
+  const navigation = useNavigation();
+
   return (
     <SafeAreaView style={styles.container}>
-       <Text style={styles.headerText}>Sign Up</Text>
+      <Text style={styles.headerText}>Login</Text>
       <TextInput
         style={styles.input}
-        keyboardType="default"
-        value={userName}
-        onChangeText={setUserName}
-        placeholder="Enter Username"
-      />
-      <TextInput
-        style={styles.input2}
         keyboardType="phone-pad"
         value={phoneNumber}
         onChangeText={setPhoneNumber}
-        placeholder="Enter Phone number"
-        secureTextEntry
+        placeholder="Enter Mobile Number"
       />
       <TextInput
         style={styles.input2}
         keyboardType="default"
-        value={userEmail}
-        onChangeText={setEmail}
-        placeholder="Enter email id"
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input2}
-        keyboardType="default"
-        value={userPassword}
-        onChangeText={setPassword}
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
         placeholder="Enter Password"
         secureTextEntry
       />
-      <TouchableOpacity style={styles.buttonview}>
-        <Text style={styles.button}>Sign Up</Text>
+      <TouchableOpacity style={styles.buttonview} onPress={()=> router.push('Shop/shopProfile')}>
+        <Text style={styles.button}>Login</Text>
       </TouchableOpacity>
-     
+      <View style={styles.signupContainer}>
+        <Text style={styles.signupText}>Don't have an Account? </Text>
+        <TouchableOpacity onPress={() => router.push('signUp/signUp')}>
+          <Text style={styles.signupLink}>SignUp</Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default signUp
+export default shopKeeperLogin;
 
 const styles = StyleSheet.create({
-
-  container:{
-   flex:1,
-   alignItems:'center',
-   justifyContent:'center'
-
-  },
   headerText: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -117,6 +102,5 @@ const styles = StyleSheet.create({
     color: 'blue',
     textDecorationLine: 'underline',
   },
-  
+});
 
-})
