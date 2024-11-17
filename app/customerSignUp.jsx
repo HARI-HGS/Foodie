@@ -5,17 +5,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 
 
-const SignUp = () => {
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [userName, setUserName] = useState('');
-  const [userEmail, setEmail] = useState('');
-  const [userPassword, setPassword] = useState('');
+const customerSignUp = () => {
+  const [shopkeeperPhoneNumber, setShopkeeperPhoneNumber] = useState('');
+  const [shopkeeperName, setShopkeeperName] = useState('');
+  const [shopkeeperEmail, setShopkeeperEmail] = useState('');
+  const [shopkeeperPassword, setShopkeeperPassword] = useState('');
 
   const router = useRouter();
 
-  // Validate input fields before sign up
   const validateInput = () => {
-    if (!phoneNumber || !userName || !userEmail || !userPassword) {
+    if (!shopkeeperPhoneNumber || !shopkeeperName || !shopkeeperEmail || !shopkeeperPassword) {
       Alert.alert('Validation Error', 'Please fill in all fields.');
       return false;
     }
@@ -23,45 +22,36 @@ const SignUp = () => {
   };
 
   const handleSignUp = async () => {
-    if (!validateInput()) return; // Validate input before proceeding
+    if (!validateInput()) return;
 
     try {
-      const response = await fetch('http://192.168.13.207:8080/api/auth/signup', {
+      const response = await fetch('http://192.168.13.207:8080/api/customer/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          phoneNumber,
-          username: userName,
-          email: userEmail,
-          password: userPassword,
+          phoneNumber: shopkeeperPhoneNumber,
+          username: shopkeeperName,
+          email: shopkeeperEmail,
+          password: shopkeeperPassword,
         }),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        // Check if token is returned in response
         if (data.token) {
-          // Save token to local storage
-          await AsyncStorage.setItem('userToken', data.token); // Store user token
-
-          console.log('Sign Up Successful:', data);
+          await AsyncStorage.setItem('shopkeeperToken', data.token);
           Alert.alert('Success', data.message || 'Sign up successful!');
-          router.push('userLogin')
-
-          // Optionally navigate to home or login screen
-          // e.g., router.push('/login') or some navigation logic here
+          router.push('shopkeeperLogin');
         } else {
           Alert.alert('Sign Up Error', 'No token received. Please try again.');
         }
       } else {
-        // Handle backend errors
         Alert.alert('Sign Up Error', data.message || 'Something went wrong. Please try again.');
       }
     } catch (error) {
-      console.error('Error during sign-up:', error);
       Alert.alert('Error', 'An error occurred during sign-up. Please try again later.');
     }
   };
@@ -71,28 +61,28 @@ const SignUp = () => {
       <Text style={styles.headerText}>Sign Up</Text>
       <TextInput
         style={styles.input}
-        value={userName}
-        onChangeText={setUserName}
-        placeholder="Enter Username"
+        value={shopkeeperName}
+        onChangeText={setShopkeeperName}
+        placeholder="Enter Shopkeeper Name"
       />
       <TextInput
         style={styles.input}
-        value={phoneNumber}
-        onChangeText={setPhoneNumber}
+        value={shopkeeperPhoneNumber}
+        onChangeText={setShopkeeperPhoneNumber}
         placeholder="Enter Phone Number"
         keyboardType="phone-pad"
       />
       <TextInput
         style={styles.input}
-        value={userEmail}
-        onChangeText={setEmail}
+        value={shopkeeperEmail}
+        onChangeText={setShopkeeperEmail}
         placeholder="Enter Email ID"
         keyboardType="email-address"
       />
       <TextInput
         style={styles.input}
-        value={userPassword}
-        onChangeText={setPassword}
+        value={shopkeeperPassword}
+        onChangeText={setShopkeeperPassword}
         placeholder="Enter Password"
         secureTextEntry
       />
@@ -103,7 +93,8 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default customerSignUp;
+
 
 const styles = StyleSheet.create({
 
